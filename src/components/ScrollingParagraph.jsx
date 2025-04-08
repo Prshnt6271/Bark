@@ -76,7 +76,6 @@ const Scrolling = () => {
     const container = containerRef.current;
     const totalScrollWidth = container.scrollWidth - window.innerWidth;
 
-    // Animate cards scroll
     gsap.to(container, {
       x: () => `-${totalScrollWidth}px`,
       ease: "none",
@@ -88,7 +87,7 @@ const Scrolling = () => {
         pin: true,
         anticipatePin: 1,
         onUpdate: (self) => {
-          const progress = self.progress; // value from 0 to 1
+          const progress = self.progress;
           const index = Math.round(progress * (services.length - 1)) + 1;
           setCurrentIndex(index);
         },
@@ -99,9 +98,10 @@ const Scrolling = () => {
   }, []);
 
   return (
-    <section ref={wrapperRef} className="relative w-full h-screen overflow-hidden bg-gray-50">
-
-
+    <section
+      ref={wrapperRef}
+      className="relative w-full h-screen overflow-hidden bg-gray-50"
+    >
       {/* 🚀 Cards container */}
       <div
         ref={containerRef}
@@ -113,18 +113,29 @@ const Scrolling = () => {
         {services.map((service, index) => (
           <div
             key={index}
-            className="w-[320px] flex-shrink-0 bg-white rounded-xl shadow-lg p-5"
+            className="w-[320px] h-[500px] flex-shrink-0 bg-white rounded-xl shadow-lg p-5 flex flex-col"
           >
-            <img
-              src={service.image}
-              alt={service.title}
-              className="w-full h-48 object-cover rounded-lg"
-            />
+            {/* ✅ Uniform image container */}
+            <div className="w-full h-[200px] overflow-hidden rounded-lg bg-gray-200">
+              <img
+                src={service.image}
+                alt={service.title}
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+
             <h3 className="text-xl font-bold mt-4">{service.title}</h3>
-            <p className="text-gray-600 mt-2">{service.description}</p>
-            <a href="#" className="text-yellow-600 font-semibold mt-3 inline-block">
-              View Plans ➜
-            </a>
+            <p className="text-gray-600 mt-2 text-lg line-clamp-4">
+              {service.description}
+            </p>
+            <div className="mt-auto pt-3">
+              <a
+                href="#"
+                className="text-yellow-600 font-semibold inline-block"
+              >
+                View Plans ➜
+              </a>
+            </div>
           </div>
         ))}
       </div>
