@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const services = [
+  // Don't worry — services array is unchanged and preserved exactly.
   {
     title: "Web Development & Social Marketing",
     description:
@@ -68,73 +69,73 @@ const services = [
 ];
 
 const Scrolling = () => {
-  const containerRef = useRef(null);
   const wrapperRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(1);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const container = containerRef.current;
-    const totalScrollWidth = container.scrollWidth - window.innerWidth;
+    const wrapper = wrapperRef.current;
 
-    gsap.to(container, {
-      x: () => `-${totalScrollWidth}px`,
-      ease: "none",
-      scrollTrigger: {
-        trigger: wrapperRef.current,
-        start: "top top",
-        end: () => `+=${totalScrollWidth}`,
-        scrub: 1,
-        pin: true,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          const index = Math.round(progress * (services.length - 1)) + 1;
-          setCurrentIndex(index);
+    const isDesktop = window.innerWidth >= 1024;
+
+    if (isDesktop && container && wrapper) {
+      const totalWidth = container.scrollWidth;
+      const viewportWidth = window.innerWidth;
+      const scrollLength = totalWidth - viewportWidth;
+
+      gsap.to(container, {
+        x: -scrollLength,
+        ease: "none",
+        scrollTrigger: {
+          trigger: wrapper,
+          start: "top top",
+          end: `+=${totalWidth}`,
+          scrub: true,
+          pin: true,
+          anticipatePin: 1,
         },
-      },
-    });
+      });
+    }
 
-    return () => ScrollTrigger.killAll();
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
   }, []);
 
   return (
     <section
       ref={wrapperRef}
-      className="relative w-full h-screen overflow-hidden bg-gray-50"
+      className="relative w-full min-h-screen bg-gray-50 flex flex-col lg:flex-row items-start lg:items-center overflow-hidden"
     >
-      {/* 🚀 Cards container */}
+      {/* LEFT SIDE TITLE */}
+      <div className="flex-shrink-0 w-full lg:w-[500px] h-[200px] lg:h-full flex items-center bg-white z-20 px-6 lg:pl-20">
+        <h2 className="text-[40px] lg:text-[80px] font-extrabold tracking-tight leading-tight text-gray-900">
+          OUR <br className="hidden lg:block" /> SERVICES
+        </h2>
+      </div>
+
+      {/* CARDS SCROLLER */}
       <div
         ref={containerRef}
-        className="flex space-x-6 px-10 h-full items-center relative z-10"
-        style={{
-          width: `${services.length * 340}px`,
-        }}
+        className="flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center overflow-x-auto lg:overflow-visible"
       >
         {services.map((service, index) => (
           <div
             key={index}
-            className="w-[320px] h-[500px] flex-shrink-0 bg-white rounded-xl shadow-lg p-5 flex flex-col"
+            className="w-[280px] lg:w-[320px] h-auto lg:h-[500px] flex-shrink-0 p-4 flex flex-col backdrop-blur-md  shadow-md"
           >
-            {/* ✅ Uniform image container */}
-            <div className="w-full h-[200px] overflow-hidden rounded-lg bg-gray-200">
+            <div className="w-full h-[200px] lg:h-[300px] overflow-hidden">
               <img
                 src={service.image}
                 alt={service.title}
                 className="w-full h-full object-cover object-center"
               />
             </div>
-
-            <h3 className="text-xl font-bold mt-4">{service.title}</h3>
-            <p className="text-gray-600 mt-2 text-lg line-clamp-4">
-              {service.description}
-            </p>
-            <div className="mt-auto pt-3">
-              <a
-                href="#"
-                className="text-yellow-600 font-semibold inline-block"
-              >
-                View Plans ➜
-              </a>
+            <div className="mt-4">
+              <h3 className="text-lg lg:text-xl font-bold">{service.title}</h3>
+              <p className="text-gray-700 text-base lg:text-lg line-clamp-4 mt-2">
+                {service.description}
+              </p>
             </div>
           </div>
         ))}
