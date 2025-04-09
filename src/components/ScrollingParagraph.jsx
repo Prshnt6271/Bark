@@ -93,15 +93,18 @@ const Scrolling = () => {
           anticipatePin: 1,
         },
       });
-    } else {
-      // Reset any transforms and allow natural scrolling
-      if (container) {
-        container.style.transform = "none";
-        container.style.overflowX = "auto";
-        container.style.display = "flex";
-        container.style.flexWrap = "nowrap";
-        container.style.WebkitOverflowScrolling = "touch";
-      }
+    } else if (container) {
+      // ✅ Reset GSAP and enable mobile scroll
+      gsap.set(container, { clearProps: "all" });
+
+      container.style.transform = "none";
+      container.style.overflowX = "auto";
+      container.style.overflowY = "hidden";
+      container.style.display = "flex";
+      container.style.flexWrap = "nowrap";
+      container.style.WebkitOverflowScrolling = "touch";
+      container.style.touchAction = "pan-x";
+      container.style.overscrollBehaviorX = "contain";
     }
 
     return () => {
@@ -114,17 +117,23 @@ const Scrolling = () => {
       ref={wrapperRef}
       className="relative w-full min-h-screen bg-gray-50 flex flex-col lg:flex-row items-start lg:items-center overflow-hidden"
     >
-      {/* LEFT SIDE TITLE */}
+      {/* LEFT TITLE */}
       <div className="flex-shrink-0 w-full lg:w-[500px] h-[200px] lg:h-full flex items-center bg-white z-20 px-6 lg:pl-20">
         <h2 className="text-[40px] lg:text-[80px] font-extrabold tracking-tight leading-tight text-gray-900">
           OUR <br className="hidden lg:block" /> SERVICES
         </h2>
       </div>
 
-      {/* CARD SCROLLER */}
+      {/* CARD CONTAINER */}
       <div
         ref={containerRef}
         className="flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center overflow-x-auto lg:overflow-visible snap-x snap-mandatory scroll-smooth"
+        style={{
+          WebkitOverflowScrolling: "touch",
+          touchAction: "pan-x",
+          overscrollBehaviorX: "contain",
+          minWidth: `${services.length * 300}px`,
+        }}
       >
         {services.map((service, index) => (
           <div
