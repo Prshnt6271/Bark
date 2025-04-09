@@ -8,6 +8,14 @@
   box-sizing: border-box;
 }
 
+/* Prevent mobile scroll jank */
+html,
+body {
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+}
+
+
 body {
   color: white;
   width: 100dvw;
