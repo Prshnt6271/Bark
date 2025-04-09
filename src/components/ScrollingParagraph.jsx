@@ -94,10 +94,10 @@ const Scrolling = () => {
         },
       });
     } else if (container) {
-      // ✅ Reset GSAP and enable mobile scroll
+      // 🧼 Clear GSAP styles
       gsap.set(container, { clearProps: "all" });
 
-      container.style.transform = "none";
+      // 🧠 Ensure real mobile scroll works
       container.style.overflowX = "auto";
       container.style.overflowY = "hidden";
       container.style.display = "flex";
@@ -115,16 +115,16 @@ const Scrolling = () => {
   return (
     <section
       ref={wrapperRef}
-      className="relative w-full min-h-screen bg-gray-50 flex flex-col lg:flex-row items-start lg:items-center overflow-hidden"
+      className="relative w-full min-h-[100vh] bg-gray-50 flex flex-col lg:flex-row items-start lg:items-center overflow-hidden"
     >
       {/* LEFT TITLE */}
       <div className="flex-shrink-0 w-full lg:w-[500px] h-[200px] lg:h-full flex items-center bg-white z-20 px-6 lg:pl-20">
-        <h2 className="text-[40px] lg:text-[80px] font-extrabold tracking-tight leading-tight text-gray-900">
+        <h2 className="text-[36px] lg:text-[80px] font-extrabold tracking-tight leading-tight text-gray-900">
           OUR <br className="hidden lg:block" /> SERVICES
         </h2>
       </div>
 
-      {/* CARD CONTAINER */}
+      {/* CARD SCROLL CONTAINER */}
       <div
         ref={containerRef}
         className="flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center overflow-x-auto lg:overflow-visible snap-x snap-mandatory scroll-smooth"
