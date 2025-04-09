@@ -1,11 +1,10 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const services = [
-  // Don't worry — services array is unchanged and preserved exactly.
   {
     title: "Web Development & Social Marketing",
     description:
@@ -75,7 +74,6 @@ const Scrolling = () => {
   useEffect(() => {
     const container = containerRef.current;
     const wrapper = wrapperRef.current;
-
     const isDesktop = window.innerWidth >= 1024;
 
     if (isDesktop && container && wrapper) {
@@ -95,6 +93,15 @@ const Scrolling = () => {
           anticipatePin: 1,
         },
       });
+    } else {
+      // Reset any transforms and allow natural scrolling
+      if (container) {
+        container.style.transform = "none";
+        container.style.overflowX = "auto";
+        container.style.display = "flex";
+        container.style.flexWrap = "nowrap";
+        container.style.WebkitOverflowScrolling = "touch";
+      }
     }
 
     return () => {
@@ -114,17 +121,17 @@ const Scrolling = () => {
         </h2>
       </div>
 
-      {/* CARDS SCROLLER */}
+      {/* CARD SCROLLER */}
       <div
         ref={containerRef}
-        className="flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center overflow-x-auto lg:overflow-visible"
+        className="flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center overflow-x-auto lg:overflow-visible snap-x snap-mandatory scroll-smooth"
       >
         {services.map((service, index) => (
           <div
             key={index}
-            className="w-[280px] lg:w-[320px] h-auto lg:h-[500px] flex-shrink-0 p-4 flex flex-col backdrop-blur-md  shadow-md"
+            className="snap-start w-[280px] lg:w-[320px] h-auto lg:h-[500px] flex-shrink-0 p-4 flex flex-col backdrop-blur-md bg-white/5 border border-gray-200 rounded-lg shadow-md"
           >
-            <div className="w-full h-[200px] lg:h-[300px] overflow-hidden">
+            <div className="w-full h-[200px] lg:h-[300px] overflow-hidden bg-gray-200 rounded-md">
               <img
                 src={service.image}
                 alt={service.title}
