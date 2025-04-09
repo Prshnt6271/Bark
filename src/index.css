@@ -2,18 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Prevent mobile scroll jank */
-html,
-body {
-  overscroll-behavior-x: contain;
-  touch-action: pan-x;
-}
 
 
 body {
