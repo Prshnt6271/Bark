@@ -65,10 +65,10 @@ const Scrolling = () => {
   useEffect(() => {
     const checkMobile = () => {
       // More reliable mobile detection
-      const mobile = window.innerWidth < 1024 || 
-                    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      setIsMobile(mobile);
-      return mobile;
+      const isMobileDevice = window.innerWidth < 768 || 
+                           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
+      return isMobileDevice;
     };
 
     // Initial check
@@ -79,37 +79,54 @@ const Scrolling = () => {
 
     if (!container || !wrapper) return;
 
-    // Clean up previous ScrollTriggers
+    // Kill any existing ScrollTriggers
     ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
     if (!mobile) {
-      // Desktop behavior - GSAP horizontal scroll
-      const totalWidth = container.scrollWidth;
-      const viewportWidth = wrapper.clientWidth;
-      const scrollLength = totalWidth - viewportWidth;
+      // DESKTOP: GSAP horizontal scroll
+      const setupDesktopScroll = () => {
+        const totalWidth = container.scrollWidth;
+        const viewportWidth = wrapper.clientWidth;
+        const scrollLength = totalWidth - viewportWidth;
 
-      gsap.to(container, {
-        x: -scrollLength,
-        ease: "none",
-        scrollTrigger: {
-          trigger: wrapper,
-          start: "top top",
-          end: `+=${totalWidth}`,
-          scrub: true,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true
-        }
-      });
+        gsap.to(container, {
+          x: -scrollLength,
+          ease: "none",
+          scrollTrigger: {
+            trigger: wrapper,
+            start: "top top",
+            end: `+=${totalWidth}`,
+            scrub: true,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            markers: false // Set to true for debugging
+          }
+        });
+      };
+
+      // Wait for images to load before calculating widths
+      const images = container.querySelectorAll('img');
+      if (images.length > 0) {
+        Promise.all(Array.from(images).map(img => {
+          if (img.complete) return Promise.resolve();
+          return new Promise(resolve => {
+            img.addEventListener('load', resolve);
+            img.addEventListener('error', resolve);
+          });
+        })).then(setupDesktopScroll);
+      } else {
+        setupDesktopScroll();
+      }
     } else {
-      // Mobile behavior - enhanced native horizontal scroll
+      // MOBILE: Native horizontal scroll with snap points
       container.style.overflowX = 'auto';
       container.style.overflowY = 'hidden';
       container.style.webkitOverflowScrolling = 'touch';
-      container.style.paddingBottom = '20px';
       container.style.scrollSnapType = 'x mandatory';
+      container.style.paddingBottom = '20px';
       
-      // Add scroll snap points for better mobile experience
+      // Add scroll snap points to each card
       const cards = container.querySelectorAll('div > div');
       cards.forEach(card => {
         card.style.scrollSnapAlign = 'start';
@@ -120,7 +137,6 @@ const Scrolling = () => {
     const handleResize = () => {
       const nowMobile = checkMobile();
       if (!nowMobile) {
-        // Refresh ScrollTrigger on resize to desktop
         ScrollTrigger.refresh();
       }
     };
@@ -149,7 +165,7 @@ const Scrolling = () => {
       <div
         ref={containerRef}
         className={`flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center ${
-          isMobile ? 'overflow-x-auto overflow-y-hidden snap-x snap-mandatory' : 'overflow-x-visible overflow-y-visible'
+          isMobile ? 'overflow-x-auto overflow-y-hidden snap-x snap-mandatory' : 'overflow-x-hidden overflow-y-visible'
         }`}
         style={isMobile ? { 
           WebkitOverflowScrolling: 'touch',
@@ -167,6 +183,7 @@ const Scrolling = () => {
                 src={service.image}
                 alt={service.title}
                 className="w-full h-full object-cover object-center"
+                loading="lazy"
               />
             </div>
             <div className="mt-4">
