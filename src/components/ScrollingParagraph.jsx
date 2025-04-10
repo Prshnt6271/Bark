@@ -5,102 +5,123 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const services = [
-  // Don't worry — services array is unchanged and preserved exactly.
-  {
-    title: "Web Development & Social Marketing",
-    description:
-      "Web development builds and optimizes websites, while social media marketing leverages platforms to enhance brand visibility and audience engagement.",
-    image: "/image1.jpeg",
-  },
-  {
-    title: "Branding",
-    description:
-      "Branding is the process of creating a unique identity for a company or product, shaping how it is perceived by consumers.",
-    image: "/image2.jpeg",
-  },
-  {
-    title: "Exclusive Networking & Industry Collaboration",
-    description:
-      "Exclusive networking and industry collaboration create powerful alliances that drive innovation, enhance business opportunities, and foster growth within a specific sector.",
-    image: "/image3.jpeg",
-  },
-  {
-    title: "Client Acquisition & Lead Generation",
-    description:
-      "Client acquisition and lead generation involve attracting and converting prospects into clients through targeted marketing and effective sales strategies.",
-    image: "/image4.jpeg",
-  },
-  {
-    title: "Project Showcasing & Portfolio Management",
-    description:
-      "Project showcasing and portfolio management involve curating and presenting your best work in a well-organized manner to demonstrate expertise and attract opportunities.",
-    image: "/image5.jpeg",
-  },
-  {
-    title: "Hiring & Talent Acquisition",
-    description:
-      "Hiring and talent acquisition focus on identifying, attracting, and recruiting top talent to meet an organization's staffing needs and drive business success.",
-    image: "/image6.jpeg",
-  },
-  {
-    title: "Project Binding & Business Expansion",
-    description:
-      "Project bidding and business expansion involve submitting competitive bids for projects while pursuing opportunities to grow and diversify the business in new markets.",
-    image: "/image7.jpeg",
-  },
-  {
-    title: "Industry Events & Growth Opportunities",
-    description:
-      "Industry events and growth opportunities provide platforms for networking, learning, and discovering new avenues for business development and market expansion",
-    image: "/image8.jpeg",
-  },
-  {
-    title: "Property Listing (Buy, Sell, Rent and Lease)",
-    description:
-      "Property listing involves showcasing properties for sale, rent, or lease, helping buyers, sellers, and renters connect to meet their real estate needs.",
-    image: "/image9.jpeg",
-  },
-  {
-    title: "Ecommerce",
-    description:
-      "Ecommerce is the buying and selling of goods and services online, enabling businesses to reach a global audience and streamline transactions.",
-    image: "/image10.jpeg",
-  },
+  // Your services array remains unchanged
+  // ...
+    // Don't worry — services array is unchanged and preserved exactly.
+    {
+      title: "Web Development & Social Marketing",
+      description:
+        "Web development builds and optimizes websites, while social media marketing leverages platforms to enhance brand visibility and audience engagement.",
+      image: "/image1.jpeg",
+    },
+    {
+      title: "Branding",
+      description:
+        "Branding is the process of creating a unique identity for a company or product, shaping how it is perceived by consumers.",
+      image: "/image2.jpeg",
+    },
+    {
+      title: "Exclusive Networking & Industry Collaboration",
+      description:
+        "Exclusive networking and industry collaboration create powerful alliances that drive innovation, enhance business opportunities, and foster growth within a specific sector.",
+      image: "/image3.jpeg",
+    },
+    {
+      title: "Client Acquisition & Lead Generation",
+      description:
+        "Client acquisition and lead generation involve attracting and converting prospects into clients through targeted marketing and effective sales strategies.",
+      image: "/image4.jpeg",
+    },
+    {
+      title: "Project Showcasing & Portfolio Management",
+      description:
+        "Project showcasing and portfolio management involve curating and presenting your best work in a well-organized manner to demonstrate expertise and attract opportunities.",
+      image: "/image5.jpeg",
+    },
+    {
+      title: "Hiring & Talent Acquisition",
+      description:
+        "Hiring and talent acquisition focus on identifying, attracting, and recruiting top talent to meet an organization's staffing needs and drive business success.",
+      image: "/image6.jpeg",
+    },
+    {
+      title: "Project Binding & Business Expansion",
+      description:
+        "Project bidding and business expansion involve submitting competitive bids for projects while pursuing opportunities to grow and diversify the business in new markets.",
+      image: "/image7.jpeg",
+    },
+    {
+      title: "Industry Events & Growth Opportunities",
+      description:
+        "Industry events and growth opportunities provide platforms for networking, learning, and discovering new avenues for business development and market expansion",
+      image: "/image8.jpeg",
+    },
+    {
+      title: "Property Listing (Buy, Sell, Rent and Lease)",
+      description:
+        "Property listing involves showcasing properties for sale, rent, or lease, helping buyers, sellers, and renters connect to meet their real estate needs.",
+      image: "/image9.jpeg",
+    },
+    {
+      title: "Ecommerce",
+      description:
+        "Ecommerce is the buying and selling of goods and services online, enabling businesses to reach a global audience and streamline transactions.",
+      image: "/image10.jpeg",
+    },
 ];
 
 const Scrolling = () => {
   const wrapperRef = useRef(null);
   const containerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    // Set initial state
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
     const container = containerRef.current;
     const wrapper = wrapperRef.current;
 
-    const isDesktop = window.innerWidth >= 1024;
+    if (container && wrapper) {
+      // Kill any existing ScrollTriggers to avoid conflicts
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
-    if (isDesktop && container && wrapper) {
-      const totalWidth = container.scrollWidth;
-      const viewportWidth = window.innerWidth;
-      const scrollLength = totalWidth - viewportWidth;
+      if (!isMobile) {
+        const totalWidth = container.scrollWidth;
+        const viewportWidth = window.innerWidth;
+        const scrollLength = totalWidth - viewportWidth;
 
-      gsap.to(container, {
-        x: -scrollLength,
-        ease: "none",
-        scrollTrigger: {
-          trigger: wrapper,
-          start: "top top",
-          end: `+=${totalWidth}`,
-          scrub: true,
-          pin: true,
-          anticipatePin: 1,
-        },
-      });
+        gsap.to(container, {
+          x: -scrollLength,
+          ease: "none",
+          scrollTrigger: {
+            trigger: wrapper,
+            start: "top top",
+            end: `+=${totalWidth}`,
+            scrub: true,
+            pin: true,
+            anticipatePin: 1,
+          },
+        });
+      } else {
+        // Enable native horizontal scrolling on mobile
+        container.style.overflowX = 'auto';
+        container.style.overflowY = 'hidden';
+        container.style.webkitOverflowScrolling = 'touch'; // For smooth scrolling on iOS
+        container.style.paddingBottom = '20px'; // Add some space at bottom
+      }
     }
 
     return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      window.removeEventListener('resize', handleResize);
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <section
@@ -110,14 +131,18 @@ const Scrolling = () => {
       {/* LEFT SIDE TITLE */}
       <div className="flex-shrink-0 w-full lg:w-[500px] h-[200px] lg:h-full flex items-center bg-white z-20 px-6 lg:pl-20">
         <h2 className="text-[40px] lg:text-[80px] font-extrabold tracking-tight leading-tight text-gray-900">
-          OUR <br className="hidden lg:block" /> SERVICES
+          OUR <br className="hidden lg:block" /> SAS
+          <br className="hidden lg:block" /> SERVICES
         </h2>
       </div>
 
       {/* CARDS SCROLLER */}
       <div
         ref={containerRef}
-        className="flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center overflow-x-auto lg:overflow-visible"
+        className={`flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center ${
+          isMobile ? 'overflow-x-auto overflow-y-hidden' : 'overflow-visible'
+        }`}
+        style={isMobile ? { WebkitOverflowScrolling: 'touch' } : {}}
       >
         {services.map((service, index) => (
           <div
