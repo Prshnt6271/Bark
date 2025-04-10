@@ -64,7 +64,9 @@ const Scrolling = () => {
 
   useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth < 1024;
+      // More reliable mobile detection
+      const mobile = window.innerWidth < 1024 || 
+                    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       setIsMobile(mobile);
       return mobile;
     };
@@ -100,16 +102,24 @@ const Scrolling = () => {
         }
       });
     } else {
-      // Mobile behavior - native horizontal scroll
+      // Mobile behavior - enhanced native horizontal scroll
       container.style.overflowX = 'auto';
       container.style.overflowY = 'hidden';
       container.style.webkitOverflowScrolling = 'touch';
       container.style.paddingBottom = '20px';
+      container.style.scrollSnapType = 'x mandatory';
+      
+      // Add scroll snap points for better mobile experience
+      const cards = container.querySelectorAll('div > div');
+      cards.forEach(card => {
+        card.style.scrollSnapAlign = 'start';
+        card.style.flexShrink = '0';
+      });
     }
 
     const handleResize = () => {
       const nowMobile = checkMobile();
-      if (!nowMobile && container) {
+      if (!nowMobile) {
         // Refresh ScrollTrigger on resize to desktop
         ScrollTrigger.refresh();
       }
@@ -139,14 +149,18 @@ const Scrolling = () => {
       <div
         ref={containerRef}
         className={`flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center ${
-          isMobile ? 'overflow-x-auto overflow-y-hidden' : 'overflow-x-visible overflow-y-visible'
+          isMobile ? 'overflow-x-auto overflow-y-hidden snap-x snap-mandatory' : 'overflow-x-visible overflow-y-visible'
         }`}
-        style={isMobile ? { WebkitOverflowScrolling: 'touch' } : {}}
+        style={isMobile ? { 
+          WebkitOverflowScrolling: 'touch',
+          scrollSnapType: 'x mandatory'
+        } : {}}
       >
         {services.map((service, index) => (
           <div
             key={index}
             className="w-[280px] lg:w-[320px] h-auto lg:h-[500px] flex-shrink-0 p-4 flex flex-col backdrop-blur-md bg-white/5 border border-gray-200 rounded-lg shadow-md"
+            style={isMobile ? { scrollSnapAlign: 'start' } : {}}
           >
             <div className="w-full h-[200px] lg:h-[300px] overflow-hidden bg-gray-200 rounded-md">
               <img
