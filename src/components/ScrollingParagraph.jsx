@@ -64,11 +64,9 @@ const Scrolling = () => {
 
   useEffect(() => {
     const checkMobile = () => {
-      // More reliable mobile detection
-      const isMobileDevice = window.innerWidth < 768 || 
-                           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      setIsMobile(isMobileDevice);
-      return isMobileDevice;
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      return mobile;
     };
 
     // Initial check
@@ -79,64 +77,40 @@ const Scrolling = () => {
 
     if (!container || !wrapper) return;
 
-    // Kill any existing ScrollTriggers
+    // Clean up previous ScrollTriggers
     ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
     if (!mobile) {
-      // DESKTOP: GSAP horizontal scroll
-      const setupDesktopScroll = () => {
-        const totalWidth = container.scrollWidth;
-        const viewportWidth = wrapper.clientWidth;
-        const scrollLength = totalWidth - viewportWidth;
+      // Desktop behavior - GSAP horizontal scroll
+      const totalWidth = container.scrollWidth;
+      const viewportWidth = wrapper.clientWidth;
+      const scrollLength = totalWidth - viewportWidth;
 
-        gsap.to(container, {
-          x: -scrollLength,
-          ease: "none",
-          scrollTrigger: {
-            trigger: wrapper,
-            start: "top top",
-            end: `+=${totalWidth}`,
-            scrub: true,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-            markers: false // Set to true for debugging
-          }
-        });
-      };
-
-      // Wait for images to load before calculating widths
-      const images = container.querySelectorAll('img');
-      if (images.length > 0) {
-        Promise.all(Array.from(images).map(img => {
-          if (img.complete) return Promise.resolve();
-          return new Promise(resolve => {
-            img.addEventListener('load', resolve);
-            img.addEventListener('error', resolve);
-          });
-        })).then(setupDesktopScroll);
-      } else {
-        setupDesktopScroll();
-      }
+      gsap.to(container, {
+        x: -scrollLength,
+        ease: "none",
+        scrollTrigger: {
+          trigger: wrapper,
+          start: "top top",
+          end: `+=${totalWidth}`,
+          scrub: true,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
+        }
+      });
     } else {
-      // MOBILE: Native horizontal scroll with snap points
+      // Mobile behavior - native horizontal scroll
       container.style.overflowX = 'auto';
       container.style.overflowY = 'hidden';
       container.style.webkitOverflowScrolling = 'touch';
-      container.style.scrollSnapType = 'x mandatory';
       container.style.paddingBottom = '20px';
-      
-      // Add scroll snap points to each card
-      const cards = container.querySelectorAll('div > div');
-      cards.forEach(card => {
-        card.style.scrollSnapAlign = 'start';
-        card.style.flexShrink = '0';
-      });
     }
 
     const handleResize = () => {
       const nowMobile = checkMobile();
-      if (!nowMobile) {
+      if (!nowMobile && container) {
+        // Refresh ScrollTrigger on resize to desktop
         ScrollTrigger.refresh();
       }
     };
@@ -165,25 +139,20 @@ const Scrolling = () => {
       <div
         ref={containerRef}
         className={`flex gap-6 lg:gap-20 px-6 pb-10 pt-6 lg:pt-0 h-full items-start lg:items-center ${
-          isMobile ? 'overflow-x-auto overflow-y-hidden snap-x snap-mandatory' : 'overflow-x-hidden overflow-y-visible'
+          isMobile ? 'overflow-x-auto overflow-y-hidden' : 'overflow-x-visible overflow-y-visible'
         }`}
-        style={isMobile ? { 
-          WebkitOverflowScrolling: 'touch',
-          scrollSnapType: 'x mandatory'
-        } : {}}
+        style={isMobile ? { WebkitOverflowScrolling: 'touch' } : {}}
       >
         {services.map((service, index) => (
           <div
             key={index}
             className="w-[280px] lg:w-[320px] h-auto lg:h-[500px] flex-shrink-0 p-4 flex flex-col backdrop-blur-md bg-white/5 border border-gray-200 rounded-lg shadow-md"
-            style={isMobile ? { scrollSnapAlign: 'start' } : {}}
           >
             <div className="w-full h-[200px] lg:h-[300px] overflow-hidden bg-gray-200 rounded-md">
               <img
                 src={service.image}
                 alt={service.title}
                 className="w-full h-full object-cover object-center"
-                loading="lazy"
               />
             </div>
             <div className="mt-4">
