@@ -21,6 +21,7 @@ export default function ReferralSection() {
 
   const handleRegisterClick = () => {
     navigate("/register");
+    window.scrollTo(0, 0); 
   };
 
   return (
