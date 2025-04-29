@@ -14,11 +14,13 @@ import ScrollingHighlight from '../components/Welcome';
 import JoinUs from '../components/joinus';
 import ReferralSection from '../components/refer';
 import ExclusiveOffer from '../components/exclusiveoffer';
+import HexagonGrid from '../components/HexagonGrid';
 
 const Home = () => {
   return (
     <main className="bg-white">
       <Header />
+      {/* <HexagonGrid/> */}
       <Hero1 />
       {/* <Hero /> */}
       <ScrollingHighlight />
