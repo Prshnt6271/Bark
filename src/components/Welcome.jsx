@@ -51,7 +51,7 @@ const ScrollingHighlight = () => {
     <div
       className="relative w-full h-[500px] flex items-center justify-center font-[Montserrat]"
       style={{
-        backgroundImage: `url("/assets/timer.jpg")`,
+        backgroundImage: `url("/assets/t3.jpg")`,
         backgroundSize: "cover",
         backgroundPosition: "center top -500px",
       }}
