@@ -60,7 +60,7 @@ const ScrollingHighlight = () => {
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
       {/* Timer Display shifted upward */}
-      <div className="relative z-10 text-white text-[2rem] sm:text-[2.8rem] md:text-[3.5rem] font-extrabold text-center flex flex-wrap justify-center gap-6 px-6 mt-[-240px]">
+      <div className="relative z-10 text-white text-[2rem] sm:text-[2.8rem] md:text-[3.5rem] font-extrabold text-center flex flex-wrap justify-center gap-6 px-6 mt-[-80px]">
         {[ 
           { label: "Months", value: timeLeft.months },
           { label: "Days", value: timeLeft.days },
