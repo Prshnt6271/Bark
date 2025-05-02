@@ -21,20 +21,32 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Menu Icon */}
-        {/* <div
-          className="flex items-center justify-center w-12 h-12 rounded-full cursor-pointer border-2 border-black bg-black"
-          onClick={toggleMenu}
-        >
-          {menuOpen ? (
-            <XMarkIcon className="w-8 h-8 text-white" />
-          ) : (
-            <Bars3Icon className="w-8 h-8 text-white" />
-          )}
-        </div> */}
+        {/* Right Side - Join as a Pro Button */}
+        <div className="flex items-center space-x-4">
+          <Link
+            to="/pro"
+            className="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-700 transition"
+          >
+            Join as a Pro
+          </Link>
+
+          {/* Uncomment below if you want to use the menu toggle icon */}
+          {/* 
+          <div
+            className="flex items-center justify-center w-12 h-12 rounded-full cursor-pointer border-2 border-black bg-black"
+            onClick={toggleMenu}
+          >
+            {menuOpen ? (
+              <XMarkIcon className="w-8 h-8 text-white" />
+            ) : (
+              <Bars3Icon className="w-8 h-8 text-white" />
+            )}
+          </div>
+          */}
+        </div>
       </header>
 
-      {/* Fixed Full-Screen Menu */}
+      {/* Full-Screen Menu */}
       <motion.div
         className={`fixed top-0 left-0 w-full h-full bg-white text-black p-6 z-40 ${menuOpen ? "transform translate-x-0" : "transform -translate-x-full"}`}
         initial={{ x: "-100%" }}

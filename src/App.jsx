@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/react';
 import Home from './pages/Home'
 import AdminLogin from "./components/AdminLogin";
 import Register from "./pages/Register";
+import ProfileSetup from "./components/ProfileSetup";
 
 const App = () => {
   return (
@@ -13,6 +14,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<AdminLogin/>} />
         <Route path="/register" element={<Register/>} />
+        <Route path="/pro" element={<ProfileSetup />} />
+
         
       </Routes>
   )
