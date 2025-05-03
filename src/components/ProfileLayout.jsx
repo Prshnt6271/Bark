@@ -14,7 +14,7 @@ const ProfileLayout = ({
   children 
 }) => {
   return (
-    <div className="min-h-screen bg-gray-100 text-black py-10 px-4">
+    <div className="min-h-screen bg-white text-black py-10 px-4">
       <div className="max-w-7xl mx-auto border shadow-lg rounded-lg overflow-hidden bg-white">
         {/* Cover Section */}
         <div className="relative h-40 sm:h-64 bg-gray-300 overflow-visible group">

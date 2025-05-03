@@ -44,7 +44,11 @@ const ProfileSetup = () => {
     teamLeads: "",
     teamProfileLinks: "",
     projectMedia: null,
-    collaborationPreferences: ""
+    collaborationPreferences: "",
+    freelanceWork: null,
+    availability: null,
+    openToCollaborations: null,
+    internshipHiring: null
   });
 
   const [activeSection, setActiveSection] = useState("Profile Info");
@@ -52,6 +56,7 @@ const ProfileSetup = () => {
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [businessLogo, setBusinessLogo] = useState(null);
   const [countryOptions, setCountryOptions] = useState([]);
+  const [errors, setErrors] = useState({});
 
   const projectTypeOptions = [
     { value: "residential", label: "Residential" },
@@ -59,6 +64,25 @@ const ProfileSetup = () => {
     { value: "industrial", label: "Industrial" },
     { value: "landscape", label: "Landscape" },
     { value: "interior", label: "Interior Design" },
+  ];
+
+  const yesNoOptions = [
+    { value: "yes", label: "Yes" },
+    { value: "no", label: "No" }
+  ];
+
+  const availabilityOptions = [
+    { value: "full-time", label: "Full Time" },
+    { value: "part-time", label: "Part Time" },
+    { value: "both", label: "Both" },
+    { value: "not-available", label: "Not Available" }
+  ];
+
+  const internshipHiringOptions = [
+    { value: "internship", label: "Open to Internship" },
+    { value: "hiring", label: "Open to Hiring" },
+    { value: "both", label: "Both" },
+    { value: "none", label: "None" }
   ];
 
   useEffect(() => {
@@ -89,11 +113,23 @@ const ProfileSetup = () => {
 
   const handleFieldChange = (field, value) => {
     setState(prev => ({ ...prev, [field]: value }));
+    setErrors(prev => ({ ...prev, [field]: "" }));
+  };
+
+  const validateFields = (fields) => {
+    const newErrors = {};
+    fields.forEach(field => {
+      if (!state[field] || (typeof state[field] === 'string' && !state[field].trim())) {
+        newErrors[field] = `${field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} is required`;
+      }
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const renderInput = (label, field, type = 'text', placeholder = '') => (
-    <div className="w-2/3">
-      <label className="block font-medium text-gray-700 mb-1">{label}</label>
+    <div className="w-2/3 mb-4">
+      <label className="block font-medium text-black mb-1">{label}</label>
       <input
         type={type}
         className="border border-gray-300 p-2 rounded w-full"
@@ -101,11 +137,30 @@ const ProfileSetup = () => {
         placeholder={placeholder}
         onChange={e => handleFieldChange(field, e.target.value)}
       />
+      {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
     </div>
   );
 
-  const renderSubmitButton = () => (
-    <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
+  const renderSelect = (label, field, options) => (
+    <div className="w-2/3 mb-4">
+      <label className="block font-medium text-black mb-1">{label}</label>
+      <Select
+        options={options}
+        styles={selectStyles}
+        value={state[field]}
+        onChange={(selected) => handleFieldChange(field, selected)}
+      />
+      {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
+    </div>
+  );
+
+  const renderSubmitButton = (fields) => (
+    <button
+      onClick={() => validateFields(fields) && alert("Submitted")}
+      className="mt-4 px-4 py-2 bg-amber-300 text-black rounded hover:bg-amber-400 transition-colors"
+    >
+      Submit
+    </button>
   );
 
   const renderProfileInfo = () => (
@@ -114,23 +169,17 @@ const ProfileSetup = () => {
       {renderInput("Last Name", "lastName", "text", "Enter your last name")}
       {renderInput("About Me", "aboutMe", "text", "Write something about yourself")}
       {renderInput("Next House Project", "nextHouseProject", "text", "Your next project idea")}
-      {renderSubmitButton()}
+      {renderSubmitButton(["firstName", "lastName", "aboutMe", "nextHouseProject"])}
     </div>
   );
 
   const renderContactInfo = () => (
     <div className="space-y-4">
-      <label className="block font-medium text-gray-700 mb-1">Country</label>
-      <Select
-        options={countryOptions}
-        styles={selectStyles}
-        value={state.country}
-        onChange={(selected) => handleFieldChange("country", selected)}
-      />
+      {renderSelect("Country", "country", countryOptions)}
       {renderInput("State", "state", "text", "Enter your state")}
       {renderInput("City", "city", "text", "Enter your city")}
       {renderInput("Pincode", "pincode", "text", "Enter your pincode")}
-      {renderSubmitButton()}
+      {renderSubmitButton(["country", "state", "city", "pincode"])}
     </div>
   );
 
@@ -139,7 +188,7 @@ const ProfileSetup = () => {
       {renderInput("Current Password", "currentPassword", "password", "Enter current password")}
       {renderInput("New Password", "newPassword", "password", "Enter new password")}
       {renderInput("Confirm Password", "confirmPassword", "password", "Re-enter new password")}
-      {renderSubmitButton()}
+      {renderSubmitButton(["currentPassword", "newPassword", "confirmPassword"])}
     </div>
   );
 
@@ -149,46 +198,44 @@ const ProfileSetup = () => {
       {renderInput("Twitter", "twitter", "text", "Twitter handle")}
       {renderInput("Instagram", "instagram", "text", "Instagram profile")}
       {renderInput("LinkedIn", "linkedin", "text", "LinkedIn profile")}
-      {renderSubmitButton()}
+      {renderSubmitButton(["facebook", "twitter", "instagram", "linkedin"])}
     </div>
   );
 
   const renderCollaborationPreferences = () => (
     <div className="space-y-4">
-      {renderInput("Collaboration Preferences", "collaborationPreferences", "text", "Describe your preferences")}
-      {renderSubmitButton()}
+      {renderSelect("Open to Freelance work?", "freelanceWork", yesNoOptions)}
+      {renderSelect("Available for", "availability", availabilityOptions)}
+      {renderSelect("Open to collaborations?", "openToCollaborations", yesNoOptions)}
+      {renderSelect("Open to Internship/Hiring", "internshipHiring", internshipHiringOptions)}
+      {renderInput("Collaboration Preferences", "collaborationPreferences", "textarea", "Describe your preferences")}
+      {renderSubmitButton(["freelanceWork", "availability", "openToCollaborations", "internshipHiring"])}
     </div>
   );
 
   const renderPortfolio = () => (
     <div className="space-y-4">
-      <label className="block font-medium text-gray-700 mb-1">Upload Project Media (images/videos)</label>
+      <label className="block font-medium text-black mb-1">Upload Project Media (images/videos)</label>
       <input type="file" multiple onChange={e => handleFieldChange("projectMedia", e.target.files)} />
       {renderInput("Project Title", "projectTitle", "text", "Enter project title")}
-      <label className="block font-medium text-gray-700 mb-1">Project Type</label>
-      <Select
-        options={projectTypeOptions}
-        styles={selectStyles}
-        value={state.projectType}
-        onChange={(selected) => handleFieldChange("projectType", selected)}
-      />
+      {renderSelect("Project Type", "projectType", projectTypeOptions)}
       {renderInput("Year Completed/In Progress", "projectYear", "text", "Enter year or 'In Progress'")}
       {renderInput("Location", "projectLocation", "text", "Enter location")}
       {renderInput("Budget Range", "budgetRange", "text", "Enter budget")}
       {renderInput("Role in Project", "projectRole", "text", "Your role")}
       {renderInput("Link to Case Study / External Site", "projectLink", "text", "Project link")}
-      {renderSubmitButton()}
+      {renderSubmitButton(["projectTitle", "projectYear", "projectLocation", "budgetRange", "projectRole", "projectLink"])}
     </div>
   );
 
   const renderBusinessInfo = () => (
     <div className="space-y-4">
       {renderInput("Business Name", "businessName", "text", "Enter business name")}
-      <label className="block font-medium text-gray-700 mb-1">Business Logo</label>
+      <label className="block font-medium text-black mb-1">Business Logo</label>
       <input type="file" onChange={e => setBusinessLogo(e.target.files[0])} />
       {renderInput("Establishment Year", "establishmentYear", "text", "Enter year")}
       {renderInput("Licence or Registration Number", "licenseNumber", "text", "Enter license or registration number")}
-      {renderSubmitButton()}
+      {renderSubmitButton(["businessName", "establishmentYear", "licenseNumber"])}
     </div>
   );
 
@@ -198,7 +245,7 @@ const ProfileSetup = () => {
       {renderInput("Past Clients", "pastClients", "text", "List past clients")}
       {renderInput("Testimonials / Client Reviews", "testimonials", "text", "Enter testimonials")}
       {renderInput("Awards / Recognition", "awards", "text", "List awards")}
-      {renderSubmitButton()}
+      {renderSubmitButton(["workHistory", "pastClients", "testimonials", "awards"])}
     </div>
   );
 
@@ -210,33 +257,36 @@ const ProfileSetup = () => {
       {renderInput("Bios", "teamBios", "text", "Short bios")}
       {renderInput("Heads of Design/Engineering/Business", "teamLeads", "text", "List team leads")}
       {renderInput("Internal Profile Links", "teamProfileLinks", "text", "Links to team profiles")}
-      {renderSubmitButton()}
+      {renderSubmitButton(["certifications", "teamMembers", "teamRoles", "teamBios", "teamLeads", "teamProfileLinks"])}
     </div>
   );
 
   return (
-    <ProfileLayout
-      coverPhoto={coverPhoto}
-      profilePhoto={profilePhoto}
-      username={state.username}
-      firstName={state.firstName}
-      lastName={state.lastName}
-      onCoverPhotoChange={(e) => setCoverPhoto(URL.createObjectURL(e.target.files[0]))}
-      onProfilePhotoChange={(e) => setProfilePhoto(URL.createObjectURL(e.target.files[0]))}
-      activeSection={activeSection}
-      sections={sections}
-      onSectionChange={setActiveSection}
-    >
-      {activeSection === "Profile Info" && renderProfileInfo()}
-      {activeSection === "Contact Info" && renderContactInfo()}
-      {activeSection === "Password" && renderPassword()}
-      {activeSection === "Social Media Settings" && renderSocialMediaSettings()}
-      {activeSection === "Portfolio" && renderPortfolio()}
-      {activeSection === "Business Info" && renderBusinessInfo()}
-      {activeSection === "Collaboration/Hiring Preferences" && renderCollaborationPreferences()}
-      {activeSection === "Experience & Clients" && renderExperienceAndClients()}
-      {activeSection === "Certifications & Associations" && renderCertifications()}
-    </ProfileLayout>
+    <div className="bg-white min-h-screen p-6">
+      <ProfileLayout
+        coverPhoto={coverPhoto}
+        profilePhoto={profilePhoto}
+        username={state.username}
+        firstName={state.firstName}
+        lastName={state.lastName}
+        onCoverPhotoChange={(e) => setCoverPhoto(URL.createObjectURL(e.target.files[0]))}
+        onProfilePhotoChange={(e) => setProfilePhoto(URL.createObjectURL(e.target.files[0]))}
+        activeSection={activeSection}
+        sections={sections}
+        onSectionChange={setActiveSection}
+      >
+        <h2 className="text-2xl font-semibold mb-4 text-black">{activeSection}</h2>
+        {activeSection === "Profile Info" && renderProfileInfo()}
+        {activeSection === "Contact Info" && renderContactInfo()}
+        {activeSection === "Password" && renderPassword()}
+        {activeSection === "Social Media Settings" && renderSocialMediaSettings()}
+        {activeSection === "Portfolio" && renderPortfolio()}
+        {activeSection === "Business Info" && renderBusinessInfo()}
+        {activeSection === "Collaboration/Hiring Preferences" && renderCollaborationPreferences()}
+        {activeSection === "Experience & Clients" && renderExperienceAndClients()}
+        {activeSection === "Certifications & Associations" && renderCertifications()}
+      </ProfileLayout>
+    </div>
   );
 };
 
