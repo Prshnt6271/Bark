@@ -1,61 +1,59 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ReferralSection() {
+const ReferralSection = () => {
+  const [daysLeft, setDaysLeft] = useState(7); // default to 7 days
   const navigate = useNavigate();
 
-  const [timeLeft, setTimeLeft] = useState(10 * 60); // 10 minutes
+  const handleAvailNow = () => {
+    navigate("/register");
+  };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
+    // Set target to 7 days from now
+    const now = new Date();
+    const targetDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    const updateCountdown = () => {
+      const currentTime = new Date();
+      const diffTime = targetDate - currentTime;
+      const diffDays = Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 0);
+      setDaysLeft(diffDays);
+    };
+
+    updateCountdown(); // run once
+
+    const timer = setInterval(updateCountdown, 1000 * 60 * 60); // hourly update
+
     return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (seconds) => {
-    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
-    const s = String(seconds % 60).padStart(2, "0");
-    return `${m}:${s}`;
-  };
-
-  const handleRegisterClick = () => {
-    navigate("/register");
-    window.scrollTo(0, 0); 
-  };
-
   return (
-    <div className="bg-[#221912] text-white p-6 rounded-lg text-center mx-auto">
-      <h2 className="text-xl font-bold">
-        Refer a Friend & Earn 5,000 Credit towards your next marketing campaign.
+    <section className="w-full bg-[#221912] text-white py-16 flex flex-col items-center justify-center px-6 text-center">
+      <h2 className="text-yellow-500 text-4xl md:text-6xl font-extrabold mb-4">
+        REGISTER NOW !!
       </h2>
-      <p className="text-sm mt-2">
-        Transform Your Business with Beebark - The Future of Architectural Networking & Marketing!
+
+      <p className="text-lg md:text-2xl text-white mb-6">
+        Unlock{" "}
+        <span className="text-yellow-500 font-bold underline decoration-green-500">
+          ₹4,10,000
+        </span>{" "}
+        worth of premium services.
       </p>
 
-      <div className="mt-4 flex flex-col items-center gap-2">
-        <div className="flex items-center justify-center gap-2 w-full">
-          <input
-            type="email"
-            placeholder="Enter email address"
-            className="px-4 py-2 w-64 rounded-lg text-gray-800 focus:outline-none"
-          />
-          <button className="bg-white text-yellow-500 font-semibold px-4 py-2 rounded-lg flex items-center gap-1">
-            Invite →
-          </button>
-        </div>
-
-        <button
-          onClick={handleRegisterClick}
-          className="mt-3 mr-20 bg-yellow-500 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition-all"
-        >
-          Register Now
-        </button>
-
-        <div className="mt-2 mr-20 text-sm text-yellow-400">
-          🎉 Offer ends in <span className="font-bold">{formatTime(timeLeft)}</span>
-        </div>
+      <div className="bg-yellow-500 text-[#221912] font-bold text-xl px-6 py-3 rounded-full shadow-lg">
+        ⏳ {daysLeft} Days to Register
       </div>
-    </div>
+
+      <button
+        onClick={handleAvailNow}
+        className="mt-8 px-8 py-3 text-lg font-semibold bg-white text-[#221912] border-2 border-yellow-500 rounded-full hover:bg-yellow-500 hover:text-white transition"
+      >
+        Register Now
+      </button>
+    </section>
   );
-}
+};
+
+export default ReferralSection;

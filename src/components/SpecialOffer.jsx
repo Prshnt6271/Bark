@@ -47,7 +47,6 @@ const SpecialOffer = () => {
             Unlock <span className="underline decoration-green-500">₹4,10,000</span>
           </h3>
           <p className="text-gray-700 text-lg">Worth of Premium Services -</p>
-          <p className="text-black text-2xl font-bold">Absolutely FREE!</p>
           <button
             onClick={handleAvailNow}
             className="mt-4 bg-yellow-400 text-black px-6 py-3 rounded-lg shadow-md font-bold hover:bg-yellow-600"

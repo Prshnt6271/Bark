@@ -49,7 +49,7 @@ const ScrollingHighlight = () => {
 
   return (
     <div
-      className="relative w-full h-[500px] flex items-center justify-center font-[Montserrat]"
+      className="relative w-full h-[500px] flex items-center justify-center font-[Montserrat] flex-col"
       style={{
         backgroundImage: `url("/assets/t3.jpg")`,
         backgroundSize: "cover",
@@ -61,7 +61,7 @@ const ScrollingHighlight = () => {
 
       {/* Timer Display shifted upward */}
       <div className="relative z-10 text-white text-[2rem] sm:text-[2.8rem] md:text-[3.5rem] font-extrabold text-center flex flex-wrap justify-center gap-6 px-6 mt-[-80px]">
-        {[ 
+        {[
           { label: "Months", value: timeLeft.months },
           { label: "Days", value: timeLeft.days },
           { label: "Hours", value: timeLeft.hours },
@@ -81,6 +81,13 @@ const ScrollingHighlight = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Right-aligned text below timer */}
+      <div className="relative z-10 mt-10 w-full px-6">
+        <h2 className="text-white text-right text-xl sm:text-2xl md:text-6xl font-semibold">
+          To launch SaaS Services
+        </h2>
       </div>
     </div>
   );

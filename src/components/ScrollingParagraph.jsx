@@ -75,7 +75,8 @@ const Scrolling = () => {
   useEffect(() => {
     const container = containerRef.current;
     const extraScroll = 400;
-    const totalScrollWidth = container.scrollWidth - window.innerWidth + extraScroll;
+    const totalScrollWidth =
+      container.scrollWidth - window.innerWidth + extraScroll;
 
     // Animate cards scroll
     gsap.to(container, {
@@ -100,13 +101,16 @@ const Scrolling = () => {
   }, []);
 
   return (
-    <section ref={wrapperRef} className="relative w-full h-screen overflow-hidden flex items-center bg-gray-50">
+    <section
+      ref={wrapperRef}
+      className="relative w-full h-screen overflow-hidden flex items-center bg-gray-50"
+    >
+   <div className="w-1/3 text-left px-5 pr-10 md:pr-20">
+  <h2 className="text-2xl sm:text-3xl md:text-6xl font-bold text-[#221912]">
+    Our <span className="text-yellow-500">SaaS</span> Services
+  </h2>
+</div>
 
-<div className="w-1/3 text-left px-5 pr-10 md:pr-20">
-<h2 className="text-4xl md:text-6xl font-bold text-[#221912]">
-  Our <span className="text-yellow-500">SaaS</span> Services
-</h2>
-           </div>
       {/* 🚀 Cards container */}
       <div
         ref={containerRef}
@@ -114,9 +118,8 @@ const Scrolling = () => {
         style={{
           width: `${services.length * 340}px`,
         }}
-    
       >
-       {services.map((service, index) => (
+        {services.map((service, index) => (
           <div
             key={index}
             className="w-[340px] h-[500px] flex-shrink-0 bg-white shadow-lg border-4 border-yellow-500  hover:text-white transition-colors duration-300"
@@ -126,7 +129,9 @@ const Scrolling = () => {
               alt={service.title}
               className="w-full h-56 object-cover"
             />
-            <h3 className="text-xl font-bold mt-4 text-gray-900 p-4 ">{service.title}</h3>
+            <h3 className="text-xl font-bold mt-4 text-gray-900 p-4 ">
+              {service.title}
+            </h3>
             <p className="text-gray-600 mt-2 p-4 ">{service.description}</p>
           </div>
         ))}
