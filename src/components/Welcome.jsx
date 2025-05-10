@@ -86,7 +86,7 @@ const ScrollingHighlight = () => {
       {/* Right-aligned text below timer */}
       <div className="relative z-10 mt-10 w-full px-6">
         <h2 className="text-white text-right text-xl sm:text-2xl md:text-6xl font-semibold">
-          To launch SaaS Services
+          To Exprience Our SaaS Services
         </h2>
       </div>
     </div>
